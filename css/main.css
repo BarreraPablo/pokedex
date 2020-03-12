@@ -1,0 +1,54 @@
+p {
+    text-align: center;
+}
+
+
+#matriz-pokemones{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#matriz-pokemones .col.centrado:hover{
+    background-color: lightblue;
+    cursor:pointer; 
+    cursor: hand
+}
+
+.activo{
+    z-index: 3;
+    color: #fff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.pequeño {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+
+.centrado{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.fila {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.col {
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    margin: 3px;
+    border: 1px solid #ece9e9;
+}
+
+.borde{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.superior{
+    padding-bottom: 10px;
+}
