@@ -37,18 +37,42 @@ export function setearNombreEImagen($cuadro , nombre , imagen ){
 }
 
 export function mostrarError(error){
-    $('#carta-error').modal('show');
+    setTimeout(() => {
+        $('#carta-pokemon').modal('hide')
+        $('#carta-error').modal('show') 
+    }, 500);
 
     $('#error').text(error)
     
 }
 
+
+function mostrarCargando(){
+    $('#carta-pokemon').modal('show');
+
+    $('#imagen-pokemon').attr("src", `../img/loading/loading.gif`)
+    $('#nombre-pokemon').html(`CARGANDO`)
+
+    $('#peso').html(`0 kg`)
+    $('#altura').html(`0 m`)
+    $('#experiencia').html(`0`)
+
+    $('#hp').css("width", 0 + "%")
+    $('#speed').css("width", 0 + "%")
+    $('#defense').css("width", 0 + "%")
+    $('#attack').css("width", 0 + "%")
+
+    if ($('#tipo .pequeño').length !== 0) { // borra los tipos anteriores
+        $('#tipo .pequeño').remove()
+    }
+}
+
 export function mostrarPokemon(url){
+    mostrarCargando()
     $.ajax({
         method: "GET",
         url: url,
         success: respuesta => {
-            $('#carta-pokemon').modal('show');
 
             $('#imagen-pokemon').attr("src", `${respuesta.sprites.front_default}`)
             $('#nombre-pokemon').html(`${respuesta.name}`.toUpperCase())
@@ -62,9 +86,7 @@ export function mostrarPokemon(url){
             $('#defense').css("width", respuesta.stats[3].base_stat + "%")
             $('#attack').css("width", respuesta.stats[4].base_stat + "%")
 
-            if ($('#tipo .pequeño').length !== 0) { // borra los tipos anteriores
-                $('#tipo .pequeño').remove()
-            }
+
             $(respuesta.types).each(function(){
                 $("#tipo").append(`<img src="img/${this.type.name}.png" title="${this.type.name}" class="pequeño"></img>`)
             })
