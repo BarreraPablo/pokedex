@@ -2,6 +2,12 @@ p {
     text-align: center;
 }
 
+img {
+    max-height: 100px;
+    max-width: 100px;
+}
+
+
 
 #matriz-pokemones{
     margin-top: 5px;
