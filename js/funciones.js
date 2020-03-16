@@ -1,4 +1,4 @@
-import { mostrarPokemon , setearNombreEImagen } from './ui.js'
+import { mostrarPokemon , setearNombreEImagen, mostrarError } from './ui.js'
 
 
 export function cargarDefault(){
@@ -27,6 +27,8 @@ export function cargarPokemones(offset){
                 habilitarClick(cartasPokemones[index], this.url)
             })
         }
+    }).fail(() => {
+        mostrarError("Cannot connect to server, try again later")
     })
 }
 

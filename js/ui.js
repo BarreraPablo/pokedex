@@ -36,12 +36,20 @@ export function setearNombreEImagen($cuadro , nombre , imagen ){
     $cuadro.find("img").attr("src", imagen)
 }
 
+export function mostrarError(error){
+    $('#carta-error').modal('show');
+
+    $('#error').text(error)
+    
+}
+
 export function mostrarPokemon(url){
-    $('#carta-pokemon').modal('show');
     $.ajax({
         method: "GET",
         url: url,
         success: respuesta => {
+            $('#carta-pokemon').modal('show');
+
             $('#imagen-pokemon').attr("src", `${respuesta.sprites.front_default}`)
             $('#nombre-pokemon').html(`${respuesta.name}`.toUpperCase())
 
@@ -61,5 +69,7 @@ export function mostrarPokemon(url){
                 $("#tipo").append(`<img src="img/${this.type.name}.png" title="${this.type.name}" class="pequeño"></img>`)
             })
         }
+    }).fail(() => {
+        mostrarError("Pokemon not found, try again later")
     })
 }
