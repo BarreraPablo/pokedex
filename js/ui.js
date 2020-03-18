@@ -47,7 +47,7 @@ export function mostrarError (error) {
 function mostrarCargando () {
 	$('#carta-pokemon').modal('show');
 
-	$('#imagen-pokemon').attr('src', '../img/loading/loading.gif');
+	$('#imagen-pokemon').attr('src', 'https://barrerapablo.github.io/pokedex/img/loading/loading.gif');
 	$('#nombre-pokemon').html('LOADING');
 
 	$('#peso').html('0 kg');
