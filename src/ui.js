@@ -1,5 +1,5 @@
-/* eslint-disable import/no-cycle */
 import { cargarPokemones } from './funciones.js';
+import { guardarPokemon, cargarPokemon } from './storage.js';
 
 export function generarMatriz () {
 	const matrizPokemones = $('#matriz-pokemones');
@@ -25,6 +25,7 @@ export function generarNavegadorPaginas () {
 
 			$('#pagination button').removeClass('activo');
 			$(this).addClass('activo');
+
 			cargarPokemones(($(this).html() - 1) * 48);
 		});
 	}
@@ -64,29 +65,38 @@ function mostrarCargando () {
 	}
 }
 
-export function mostrarPokemon (url) {
+export function mostrarPokemon (url, nombre) {
 	mostrarCargando();
-	$.ajax({
-		method: 'GET',
-		url,
-		success: (respuesta) => {
-			$('#imagen-pokemon').attr('src', `${respuesta.sprites.front_default}`);
-			$('#nombre-pokemon').html(`${respuesta.name}`.toUpperCase());
+	try {
+		setearDatosPokemon(cargarPokemon(nombre));
+	} catch (e) {
+		$.ajax({
+			method: 'GET',
+			url,
+			success: (respuesta) => {
+				guardarPokemon(respuesta);
+				setearDatosPokemon(respuesta);
+			}
+		}).fail(() => {
+			mostrarError('Pokemon not found, try again later');
+		});
+	}
+}
 
-			$('#peso').html(`${respuesta.weight / 10} kg`);
-			$('#altura').html(`${respuesta.height / 10} m`);
-			$('#experiencia').html(`${respuesta.base_experience}`);
+function setearDatosPokemon (pokemon) {
+	$('#imagen-pokemon').attr('src', `${pokemon.sprites.front_default}`);
+	$('#nombre-pokemon').html(`${pokemon.name}`.toUpperCase());
 
-			$('#hp').css('width', `${respuesta.stats[5].base_stat}%`);
-			$('#speed').css('width', `${respuesta.stats[0].base_stat}%`);
-			$('#defense').css('width', `${respuesta.stats[3].base_stat}%`);
-			$('#attack').css('width', `${respuesta.stats[4].base_stat}%`);
+	$('#peso').html(`${pokemon.weight / 10} kg`);
+	$('#altura').html(`${pokemon.height / 10} m`);
+	$('#experiencia').html(`${pokemon.base_experience}`);
 
-			$(respuesta.types).each(function () {
-				$('#tipo').append(`<img src="img/${this.type.name}.png" title="${this.type.name}" class="pequeño"></img>`);
-			});
-		}
-	}).fail(() => {
-		mostrarError('Pokemon not found, try again later');
+	$('#hp').css('width', `${pokemon.stats[5].base_stat}%`);
+	$('#speed').css('width', `${pokemon.stats[0].base_stat}%`);
+	$('#defense').css('width', `${pokemon.stats[3].base_stat}%`);
+	$('#attack').css('width', `${pokemon.stats[4].base_stat}%`);
+
+	$(pokemon.types).each(function () {
+		$('#tipo').append(`<img src="img/${this.type.name}.png" title="${this.type.name}" class="pequeño"></img>`);
 	});
 }
