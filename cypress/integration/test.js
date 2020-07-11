@@ -1,17 +1,20 @@
 /* eslint-disable */ 
-/// <reference types="cypress" />
+/// <reference types="Cypress" />
 
-const URL = 'http://192.168.0.27:8080/';
-
-context('Test pokedex', () => {
-	const CANTIDAD_CUADROS = 48;
-
+describe('Test pokedex', () => {
 	before(() => {
-		cy.visit(URL);
-	});
+      cy.server();
+      cy.route('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=48', 'fixture:pagina-1')
+        .as('obtenerPrimeraPagina');
+  
+      cy.visit('http://127.0.0.1:5500');
+    });
 
-	it('Matriz completa', () => {
-		cy.get('#matriz-pokemones').find('.row .centrado').should('have.length', CANTIDAD_CUADROS);
+	it('Carga primera pagina', () => {
+        const CANTIDAD_CUADROS = 48;
+        const CANTIDAD_PAGINAS = 18;
+        cy.get('#matriz-pokemones').find('.row .centrado').should('have.length', CANTIDAD_CUADROS);
+        cy.get('#pagination li').should('have.length', CANTIDAD_PAGINAS);
     });
     
     it('Muestra y cierra modal pokemon', () => {
@@ -24,6 +27,9 @@ context('Test pokedex', () => {
 
     
     it('Busca pokemon valido', () => {
+        cy.server();
+        cy.route('https://pokeapi.co/api/v2/pokemon/pikachu', 'fixture:pikachu')
+        
         const nombrePokemon = 'pIKachu';
 
         cy.get('input[type=search]').type(nombrePokemon);
@@ -43,23 +49,16 @@ context('Test pokedex', () => {
         cy.get('#carta-error').find('.modal-footer button').click();
     })
 
-    describe('Verifica que el pokemon seleccionado sea el mostrado', () => {
-        for(let i=0; i<5; i++){
-            it('Cambio de pagina aleatorio', () => {
-                cy.get('#pagination button').eq(Math.floor(Math.random()*18)).click();
-            })
-            it('Seleccion pokemon aleatorio', () => {
-                const numeroAleatorio = Math.floor(Math.random() * 48);
-        
-                cy.get('#matriz-pokemones .row .centrado').eq(numeroAleatorio).click().then((cuadro) => {
-                    cy.wait(500);
-                    cy.get('#nombre-pokemon').should('have.text', cuadro.find('p').text());
-                });
-        
+    it('Cambio de pagina y selección de pokemon', () => {
+        cy.server();
+        cy.route('https://pokeapi.co/api/v2/pokemon/?offset=144&limit=48', 'fixture:pagina-4').as('obtenerPagina4');
+        cy.route('https://pokeapi.co/api/v2/pokemon/moltres', 'fixture:moltres').as('obtenerPokemonMoltres');
 
-                cy.get('#carta-pokemon .modal-footer button').click();
-                cy.wait(500);
-            })
-        }
+
+        cy.get('#pagination button').eq(3).click()     // Selección pagina 4
+        cy.wait(500);
+        cy.get('#matriz-pokemones').find('.row .centrado').eq(1).click() // seleccion del pokemon MOLTRES
+        cy.wait(500);
+        cy.get('#nombre-pokemon').should('have.text', 'MOLTRES');
     })
 });
