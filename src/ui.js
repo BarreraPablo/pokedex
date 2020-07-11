@@ -21,7 +21,7 @@ export function generarNavegadorPaginas () {
 	for (let i = 0; i < cantidadPaginas; i++) {
 		$('#pagination').append(`<li class="page-item"><button class="page-link">${i + 1}</button></li>`);
 		$($('#pagination button')[i]).on('click', function () {
-			$(cartasPokemones).unbind(); // borro los onclick anteriores
+			$(cartasPokemones).unbind(); // borro los event listeners (onclick) anteriores
 
 			$('#pagination button').removeClass('activo');
 			$(this).addClass('activo');
