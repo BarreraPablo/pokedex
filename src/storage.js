@@ -8,11 +8,20 @@ export function cargarPokemonesLocalStorage (offset) {
 };
 
 export function guardarPokemonesStorage (pokemones, contenido) {
-	localStorage.setItem(pokemones, contenido);
+	try {
+		localStorage.setItem(pokemones, contenido);
+	} catch(e) {
+		localStorage.clear();
+	};
 }
 
 export function guardarPokemon (pokemon) {
-	localStorage.setItem(pokemon.name, JSON.stringify(pokemon));
+	try {
+		localStorage.setItem(pokemon.name, JSON.stringify(pokemon));
+	} catch(e) {
+		localStorage.clear();
+	}
+	
 }
 
 export function cargarPokemon (nombre) {
